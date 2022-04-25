@@ -35,16 +35,14 @@ def cgemm_explict(A_r, A_i, B_r, B_i, C_r, C_i):
 @tf.function
 def main():
     m, n, k = 3, 3, 3
-    A = tf.random.uniform(shape=[m,k], dtype=tf.float32)
-    B = tf.random.uniform(shape=[m,k], dtype=tf.float32)
-    C = tf.random.uniform(shape=[m,k], dtype=tf.float32)
-    s = time.time()
+    A =1
+    B =2
+    C =3
     C = tf.add(A, B)
-    C = tf.matmul(A, B)
-    elapsed = time.time() - s
-    m, n, k = C.shape[0], C.shape[1], A.shape[1]
-    tf.print((8.0 * m * n * k) / (elapsed * 1e9))
-    return C
+    # C = tf.matmul(A, B)
+    k = C
+    tf.print((k))
+    return k
 
 
 
