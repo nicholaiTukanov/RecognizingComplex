@@ -17,23 +17,40 @@ def cgemm_direct(A, B, C):
 def cgemm_explict(A_r, A_i, B_r, B_i, C_r, C_i):
     return tf.complex(A_r @ B_r - A_i @ B_i + C_r, A_r @ B_i + A_i @ B_r + C_i)
 
-@tf.function(autograph=True)
+# @tf.function(autograph=True)
+# def main():
+#     m, n, k = 3, 3, 3
+#     A = tf.complex(tf.random.uniform(shape=[m,k], dtype=tf.float32), tf.random.uniform(shape=[m,k], dtype=tf.float32))
+#     B = tf.complex(tf.random.uniform(shape=[k,n], dtype=tf.float32), tf.random.uniform(shape=[k,n], dtype=tf.float32))
+#     C = tf.complex(tf.random.uniform(shape=[m,n], dtype=tf.float32), tf.random.uniform(shape=[m,n], dtype=tf.float32))
+#     s = time.time()
+#     C = cgemm_direct(A,B,C)
+#     elapsed = time.time() - s
+#     m, n, k = C.shape[0], C.shape[1], A.shape[1]
+#     tf.print("\n*******GFLOPS******* = ", (8.0 * m * n * k) / (elapsed * 1e9), "\n")
+#     C += 1
+#     return C
+
+
+@tf.function
 def main():
-    m = 3
-    n = 3
-    k = 3
-    A = tf.complex(tf.random.uniform(shape=[m,k], dtype=tf.float32), tf.random.uniform(shape=[m,k], dtype=tf.float32))
-    B = tf.complex(tf.random.uniform(shape=[k,n], dtype=tf.float32), tf.random.uniform(shape=[k,n], dtype=tf.float32))
-    C = tf.complex(tf.random.uniform(shape=[m,n], dtype=tf.float32), tf.random.uniform(shape=[m,n], dtype=tf.float32))
+    m, n, k = 3, 3, 3
+    A = tf.random.uniform(shape=[m,k], dtype=tf.float32)
+    B = tf.random.uniform(shape=[m,k], dtype=tf.float32)
+    C = tf.random.uniform(shape=[m,k], dtype=tf.float32)
     s = time.time()
-    cgemm_direct(A,B,C)
+    C = tf.add(A, B)
+    C = tf.matmul(A, B)
     elapsed = time.time() - s
     m, n, k = C.shape[0], C.shape[1], A.shape[1]
-    print("\n*******GFLOPS******* = ", (8.0 * m * n * k) / (elapsed * 1e9), "\n")
+    tf.print((8.0 * m * n * k) / (elapsed * 1e9))
     return C
 
+
+
 def get_tf_mlir(func_obj):
-    pass_pipe = ['tf-standard-pipeline', 'tf-data-optimization']
+    pass_pipe = ['convert-tf-control-flow-to-scf']
+    # pass_pipe = ['tf-standard-pipeline']
     for pass_ in pass_pipe:
         mlir_obj = tf.mlir.experimental.convert_graph_def(func_obj, pass_pipeline=pass_)
     return mlir_obj
