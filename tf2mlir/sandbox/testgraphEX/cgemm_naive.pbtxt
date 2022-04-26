@@ -1,0 +1,326 @@
+node {
+  name: "ar"
+  op: "Placeholder"
+  attr {
+    key: "_user_specified_name"
+    value {
+      s: "ar"
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: 3
+        }
+        dim {
+          size: 3
+        }
+      }
+    }
+  }
+}
+node {
+  name: "ai"
+  op: "Placeholder"
+  attr {
+    key: "_user_specified_name"
+    value {
+      s: "ai"
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: 3
+        }
+        dim {
+          size: 3
+        }
+      }
+    }
+  }
+}
+node {
+  name: "br"
+  op: "Placeholder"
+  attr {
+    key: "_user_specified_name"
+    value {
+      s: "br"
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: 3
+        }
+        dim {
+          size: 3
+        }
+      }
+    }
+  }
+}
+node {
+  name: "bi"
+  op: "Placeholder"
+  attr {
+    key: "_user_specified_name"
+    value {
+      s: "bi"
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: 3
+        }
+        dim {
+          size: 3
+        }
+      }
+    }
+  }
+}
+node {
+  name: "cr"
+  op: "Placeholder"
+  attr {
+    key: "_user_specified_name"
+    value {
+      s: "cr"
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: 3
+        }
+        dim {
+          size: 3
+        }
+      }
+    }
+  }
+}
+node {
+  name: "ci"
+  op: "Placeholder"
+  attr {
+    key: "_user_specified_name"
+    value {
+      s: "ci"
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: 3
+        }
+        dim {
+          size: 3
+        }
+      }
+    }
+  }
+}
+node {
+  name: "MatMul"
+  op: "MatMul"
+  input: "ar"
+  input: "br"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "transpose_a"
+    value {
+      b: false
+    }
+  }
+  attr {
+    key: "transpose_b"
+    value {
+      b: false
+    }
+  }
+}
+node {
+  name: "MatMul_1"
+  op: "MatMul"
+  input: "ai"
+  input: "bi"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "transpose_a"
+    value {
+      b: false
+    }
+  }
+  attr {
+    key: "transpose_b"
+    value {
+      b: false
+    }
+  }
+}
+node {
+  name: "sub"
+  op: "Sub"
+  input: "MatMul"
+  input: "MatMul_1"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "MatMul_2"
+  op: "MatMul"
+  input: "ar"
+  input: "bi"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "transpose_a"
+    value {
+      b: false
+    }
+  }
+  attr {
+    key: "transpose_b"
+    value {
+      b: false
+    }
+  }
+}
+node {
+  name: "MatMul_3"
+  op: "MatMul"
+  input: "ai"
+  input: "br"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "transpose_a"
+    value {
+      b: false
+    }
+  }
+  attr {
+    key: "transpose_b"
+    value {
+      b: false
+    }
+  }
+}
+node {
+  name: "add"
+  op: "AddV2"
+  input: "MatMul_2"
+  input: "MatMul_3"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "Complex"
+  op: "Complex"
+  input: "sub"
+  input: "add"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "Tout"
+    value {
+      type: DT_COMPLEX64
+    }
+  }
+}
+node {
+  name: "Identity"
+  op: "Identity"
+  input: "Complex"
+  attr {
+    key: "T"
+    value {
+      type: DT_COMPLEX64
+    }
+  }
+}
+versions {
+  producer: 987
+}

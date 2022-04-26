@@ -12,7 +12,11 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <omp.h>
+#include <unistd.h>
+#include <string.h>
+#include "omp.h"
+
+using namespace std;
 
 /*
 
@@ -27,65 +31,74 @@ typedef struct memref_descriptor_ *memref_descriptor;
 
 typedef long int intptr_t;
 
-template <typename T>
-struct memref_descriptor_ {
-    T *allocated;
-    T *aligned;
+
+// typedef struct memref_descriptor_ {
+//     short *allocated;
+//     short *aligned;
+//     intptr_t offset;
+//     intptr_t sizes[1];
+//     intptr_t strides[1];
+// } memref;
+
+#define DTYPE float
+
+typedef struct memref_descriptor_ {
+    DTYPE *allocated;
+    DTYPE *aligned;
     intptr_t offset;
     intptr_t sizes[1];
     intptr_t strides[1];
 } memref;
 
-typedef memref<int16_t> i16_memref;
-typedef memref<int32_t> i32_memref;
 
 // deinterleaved naive kernel
-void linalg_cgemm_naive(
-    memref *Ar, memref *Ai, 
-    memref *Br, memref *Bi,
-    memref *Cr, memref *Ci
+memref* linalg_cgemm_naive(
+    memref *, memref *, 
+    memref *, memref *,
+    memref *, memref *
 );
 
-void linalg_cgemm_opt_4m(
-    memref *A, // interleaved
-    memref *B, // interleaved
-    memref *C // interleaved
-);
+// memref* linalg_cgemm_opt_4m(
+//     memref *A, // interleaved
+//     memref *B, // interleaved
+//     memref *C // interleaved
+// );
 
-void linalg_cgemm_opt_1m(
-    memref *A, // 1m format
-    memref *B, // interleaved
-    memref *C // interleaved
-);
+// memref* linalg_cgemm_opt_1m(
+//     memref *A, // 1m format
+//     memref *B, // interleaved
+//     memref *C // interleaved
+// );
 
 #define MAX_VAL 5
 
-template <typename T>
-void init_mat(T **mat, int elems) {
-    *mat = (int16_t *) malloc(elems * sizeof(int16_t));
+void init_mat(DTYPE **mat, int elems) {
+    *mat = (DTYPE *) malloc(elems * sizeof(DTYPE));
     for(int i=0;i<elems;i++)
-        mat[i] = ((T) (rand() % MAX_VAL));
+        (*mat)[i] = ((DTYPE) (rand() % MAX_VAL));
 }
 
-void init_i16_memref(i16_memref *mat, int elems) {
-    int16_t *mat_;
+void init_memref(memref *mat, int elems) {
+    DTYPE *mat_;
     init_mat(&mat_, elems);
     mat->aligned = mat_;
 }
 
+#define min(x,y) (x) < (y) ? (x) : (y)
 
 void mlir_linalg_function(int m, int n, int k) {
 
-    i16_memref *Ar = (i16_memref *)malloc(sizeof(i16_memref));
-    i16_memref *Ai = (i16_memref *)malloc(sizeof(i16_memref));
-    i16_memref *Br = (i16_memref *)malloc(sizeof(i16_memref));
-    i16_memref *Bi = (i16_memref *)malloc(sizeof(i16_memref));
-    i32_memref *Cr = (i32_memref *)malloc(sizeof(i32_memref));
-    i32_memref *Ci = (i32_memref *)malloc(sizeof(i32_memref));
+    memref *Ar = (memref *)malloc(sizeof(memref));
+    memref *Ai = (memref *)malloc(sizeof(memref));
+    memref *Br = (memref *)malloc(sizeof(memref));
+    memref *Bi = (memref *)malloc(sizeof(memref));
+    memref *Cr = (memref *)malloc(sizeof(memref));
+    memref *Ci = (memref *)malloc(sizeof(memref));
+    memref *C =  (memref *)malloc(sizeof(memref));
 
-    init_i16_memref(Ar, m*k); init_i16_memref(Ai, m*k);
-    init_i16_memref(Br, n*k); init_i16_memref(Bi, n*k);
-    init_i16_memref(Cr, m*n); init_i16_memref(Ci, m*n);
+    init_memref(Ar, m*k); init_memref(Ai, m*k);
+    init_memref(Br, n*k); init_memref(Bi, n*k);
+    init_memref(Cr, m*n); init_memref(Ci, m*n);
 
     double s,e,min_elapsed=1e9; // timing stuff
     int NUM_RUNS = 5; // set repeats
@@ -95,14 +108,14 @@ void mlir_linalg_function(int m, int n, int k) {
 
         // time kernel
         s = omp_get_wtime();
-        linalg_cgemm_naive(
+        Cr = linalg_cgemm_naive(
             Ar, Ai, 
             Br, Bi,
             Cr, Ci
         );
         e = omp_get_wtime();
 
-        min_elapsed = std::min(min_elapsed, e-s);
+        min_elapsed = min(min_elapsed, e-s);
 
     }
 
@@ -125,7 +138,7 @@ int main(int argc, char *argv[]) {
         k = atoi(argv[3]);
     }
     else {
-        m = n = k = 512;
+        m = n = k = 3;
     }
     
 
