@@ -35,8 +35,4 @@ versions {
 }
 
 
-
-bazel run //tensorflow/compiler/mlir:tf-mlir-translate --  --graphdef-to-mlir --tf-input-arrays=input0,input1     --tf-input-data-types=DT_INT32,DT_INT32     --tf-input-shapes=10:10 --tf-output-arrays=Add     ${PWD}/add.pbtxt   -o ${PWD}/add.mlir
-
-# tf_executor Dialect -> tf Dialect
 bazel run //tensorflow/compiler/mlir:tf-opt -- --tf-executor-to-functional-conversion ${PWD}/add.mlir  -o ${PWD}/add-func.mlir

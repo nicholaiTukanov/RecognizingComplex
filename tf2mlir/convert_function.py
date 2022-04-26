@@ -41,7 +41,7 @@ def main():
     C = tf.add(A, B)
     # C = tf.matmul(A, B)
     k = C
-    tf.print((k))
+    # tf.print((k))
     return k
 
 
@@ -83,6 +83,8 @@ main_func = main.get_concrete_function().graph.as_graph_def()
 #     tf.TensorSpec(shape=[m, n], dtype=tf.dtypes.float32, name="Cr"),
 #     tf.TensorSpec(shape=[m, n], dtype=tf.dtypes.float32, name="Ci")
 # )
+
+print(main_func)
 
 print_tf_mlir(main_func)
 # print_tf_mlir(cgemm_direct_func)
