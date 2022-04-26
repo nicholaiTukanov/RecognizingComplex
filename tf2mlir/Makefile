@@ -2,7 +2,7 @@
 MLIR_PATH = /home/nicholai/prog/software/llvm-project/build
 
 MLIR_OPT = $(MLIR_PATH)/bin/mlir-opt
-OPT_FLAGS = -convert-linalg-to-loops -lower-affine --convert-scf-to-cf --convert-cf-to-llvm --emit-c-wrappers
+OPT_FLAGS = -convert-linalg-to-loops --lower-affine --convert-scf-to-cf --convert-cf-to-llvm
 
 MLIR_TRANS = $(MLIR_PATH)/bin/mlir-translate
 TRANS_FLAGS = --mlir-to-llvmir
