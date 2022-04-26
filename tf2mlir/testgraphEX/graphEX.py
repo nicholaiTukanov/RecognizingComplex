@@ -11,9 +11,9 @@ def a_regular_function(x, y, b):
 a_function_that_uses_a_graph = tf.function(a_regular_function)
 
 # Make some tensors.
-x1 = tf.constant([[1.0, 2.0]])
-y1 = tf.constant([[2.0], [3.0]])
-b1 = tf.constant(4.0)
+x1 = tf.constant([[1.0, 2.0],[1.0, 2.0] ])
+y1 = tf.constant([[2.0, 2.0], [3.0, 3.0]])
+b1 = tf.constant([[1.0, 2.0]])
 
 orig_value = a_regular_function(x1, y1, b1).numpy()
 # Call a `Function` like a Python function.

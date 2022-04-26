@@ -1,0 +1,137 @@
+node {
+  name: "x"
+  op: "Placeholder"
+  attr {
+    key: "_user_specified_name"
+    value {
+      s: "x"
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: 2
+        }
+        dim {
+          size: 2
+        }
+      }
+    }
+  }
+}
+node {
+  name: "y"
+  op: "Placeholder"
+  attr {
+    key: "_user_specified_name"
+    value {
+      s: "y"
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: 2
+        }
+        dim {
+          size: 2
+        }
+      }
+    }
+  }
+}
+node {
+  name: "b"
+  op: "Placeholder"
+  attr {
+    key: "_user_specified_name"
+    value {
+      s: "b"
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: 1
+        }
+        dim {
+          size: 2
+        }
+      }
+    }
+  }
+}
+node {
+  name: "MatMul"
+  op: "MatMul"
+  input: "x"
+  input: "y"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "transpose_a"
+    value {
+      b: false
+    }
+  }
+  attr {
+    key: "transpose_b"
+    value {
+      b: false
+    }
+  }
+}
+node {
+  name: "add"
+  op: "AddV2"
+  input: "MatMul"
+  input: "b"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "Identity"
+  op: "Identity"
+  input: "add"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+versions {
+  producer: 987
+}
