@@ -1,4 +1,0 @@
-name: complex
-dependencies:
-  - tensorflow
-  - python

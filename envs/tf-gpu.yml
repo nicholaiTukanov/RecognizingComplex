@@ -1,4 +1,0 @@
-name: complex-gpu
-dependencies:
-  - tensorflow-gpu
-  - python
